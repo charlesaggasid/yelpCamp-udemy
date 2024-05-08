@@ -31,6 +31,13 @@ app.get('/', (req, res) => {
     res.render("home");
 });
 
+//------------------------CAMPGROUND INDEX PAGE-----------------------
+app.get('/campgrounds', async (req, res) => {
+    const campgrounds = await Campground.find({})
+    res.render('campgrounds/index', {campgrounds})
+})
+
+
 //------------------------listen to port-----------------------
 // Listening on port 3000 for incoming requests
 app.listen(3000, () => {
