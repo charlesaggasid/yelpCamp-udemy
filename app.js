@@ -4,6 +4,7 @@ const path = require("path"); // Importing path module to handle file paths
 const mongoose = require('mongoose')
 const Campground = require('./models/campground')
 
+mongoose.set('strictQuery', true);
 mongoose.connect('mongodb://localhost:27017/yelp-camp', {
     // useNewUrlParser: true,
     // createIndexes: true,
