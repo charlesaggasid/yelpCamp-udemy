@@ -35,6 +35,15 @@ app.get('/', (req, res) => {
 app.get('/campgrounds', async (req, res) => {
     const campgrounds = await Campground.find({})
     res.render('campgrounds/index', {campgrounds})
+});
+
+//------------------------SHOW 1 CAMP-----------------------
+// Somehow this code stay below, since we're looking for an ID. A post needs to be created first for we can look for the ID.
+app.get('/campgrounds/:id', async (req, res) => {
+    const {id} = req.params
+    const campground = await Campground.findById(id)
+    console.log(campground)
+    res.render('campgrounds/show', {campground})
 })
 
 
