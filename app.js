@@ -24,6 +24,8 @@ const app = express(); // Creating an Express application
 app.set('view engine', 'ejs'); // Setting the view engine to EJS
 app.set('views', path.join(__dirname, 'views')); // Specifying the directory for views
 
+app.use(express.urlencoded({extended: true})) //Parsing the body after new post is created
+
 //------------------------SAMPLE PAGE-----------------------
 // Handling GET request to the root URL
 app.get('/', (req, res) => {
@@ -36,6 +38,22 @@ app.get('/campgrounds', async (req, res) => {
     const campgrounds = await Campground.find({})
     res.render('campgrounds/index', {campgrounds})
 });
+
+//-------Order matters. No async/await for  CREATE A NEW CAMPGROUND-----------------------
+app.get('/campgrounds/new', (req, res) => {
+    res.render('campgrounds/new')
+})
+//Need post request
+app.post('/campgrounds', async (req, res, next) => {
+    try {
+        const campground = new Campground (req.body.campground)
+        await campground.save()
+        res.redirect(`/campgrounds/${campground._id}`)
+    } catch (e) {
+        next(e)
+    }
+})
+
 
 //------------------------SHOW 1 CAMP-----------------------
 // Somehow this code stay below, since we're looking for an ID. A post needs to be created first for we can look for the ID.
