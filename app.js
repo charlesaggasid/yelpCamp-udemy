@@ -92,6 +92,7 @@ app.delete('/campgrounds/:id', async (req, res) => {
 })
 
 
+
 //------------------------listen to port-----------------------
 // Listening on port 3000 for incoming requests
 app.listen(3000, () => {
