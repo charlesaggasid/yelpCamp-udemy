@@ -8,8 +8,10 @@ const Schema = mongoose.Schema;
 const CampgroundSchema = new Schema({
     // Field for storing the title of the campground
     title: String,
+    //
+    image: String,
     // Field for storing the price of the campground
-    price: String,
+    price: Number,
     // Field for storing the description of the campground
     description: String,
     // Field for storing the location of the campground
