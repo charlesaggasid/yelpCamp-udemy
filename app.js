@@ -3,7 +3,9 @@ const express = require('express'); // Importing Express framework
 const path = require("path"); // Importing path module to handle file paths
 const mongoose = require('mongoose')
 const ejsMate = require('ejs-mate')
+const Joi = require('joi')
 // const { campgroundSchema } = require('./schemas.js');
+
 const catchAsync = require('./utils/catchAsync');
 const ExpressError = require('./utils/ExpressError');
 const methodOverride = require('method-override'); //important for EDIT
@@ -105,10 +107,18 @@ app.all('*', (req, res, next) => {
 //     res.send('oh boy');
 // });
 
+
+// This middleware function is set up to handle errors in your Express application
 app.use((err, req, res, next) => {
-    const { statusCode = 500, message = 'Something went wrong' } = err;
-    res.status(statusCode).send(message);
-})
+    // Destructure the statusCode property from the error object, defaulting to 500 if it doesn't exist
+    const { statusCode = 500 } = err;
+    // If the error doesn't have a message, set a default error message
+    if (!err.message) err.message = 'Oh No, Something Went Wrong!';
+    // Set the HTTP status code of the response to the statusCode from the error object
+    res.status(statusCode)
+        // Render an error template (assuming you have one named 'error') and pass the error object to it
+        .render('error', { err });
+});
 
 
 
