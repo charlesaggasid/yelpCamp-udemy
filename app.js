@@ -3,16 +3,14 @@ const express = require('express'); // Importing Express framework
 const path = require("path"); // Importing path module to handle file paths
 const mongoose = require('mongoose')
 const ejsMate = require('ejs-mate')
+// const { campgroundSchema } = require('./schemas.js');
+const catchAsync = require('./utils/catchAsync');
+const ExpressError = require('./utils/ExpressError');
 const methodOverride = require('method-override'); //important for EDIT
 const Campground = require('./models/campground')
-const e = require("express");
 
-mongoose.set('strictQuery', true);
-mongoose.connect('mongodb://localhost:27017/yelp-camp', {
-    // useNewUrlParser: true,
-    // createIndexes: true,
-    // useUnifiedTopology: true
-});
+
+mongoose.connect('mongodb://localhost:27017/yelp-camp')
 
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error:"));
@@ -49,15 +47,11 @@ app.get('/campgrounds/new', (req, res) => {
     res.render('campgrounds/new')
 })
 //Need post request
-app.post('/campgrounds', async (req, res, next) => {
-    try {
+app.post('/campgrounds', catchAsync(async (req, res, next) => {
         const campground = new Campground (req.body.campground)
         await campground.save()
         res.redirect(`/campgrounds/${campground._id}`)
-    } catch (e) {
-        next(e)
-    }
-})
+}))
 
 
 //------------------------SHOW 1 CAMP-----------------------
@@ -89,6 +83,10 @@ app.delete('/campgrounds/:id', async (req, res) => {
     const {id} = req.params
     await Campground.findByIdAndDelete(id)
     res.redirect('/campgrounds')
+})
+
+app.use((err, req, res, next) => {
+    res.send ('oh boy')
 })
 
 
