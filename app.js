@@ -37,10 +37,10 @@ app.get('/', (req, res) => {
 });
 
 //------------------------CAMPGROUND INDEX PAGE-----------------------
-app.get('/campgrounds', async (req, res) => {
+app.get('/campgrounds', catchAsync(async (req, res) => {
     const campgrounds = await Campground.find({})
     res.render('campgrounds/index', {campgrounds})
-});
+}))
 
 //-------Order matters. No async/await for  CREATE A NEW CAMPGROUND-----------------------
 app.get('/campgrounds/new', (req, res) => {
@@ -56,34 +56,34 @@ app.post('/campgrounds', catchAsync(async (req, res, next) => {
 
 //------------------------SHOW 1 CAMP-----------------------
 // Somehow this code stay below, since we're looking for an ID. A post needs to be created first for we can look for the ID.
-app.get('/campgrounds/:id', async (req, res) => {
+app.get('/campgrounds/:id', catchAsync(async (req, res) => {
     const {id} = req.params
     const campground = await Campground.findById(id)
     console.log(campground)
     res.render('campgrounds/show', {campground})
-})
+}))
 
 
 //------------------------EDIT CAMPGROUND-----------------------
 //Need to do methodOverride for PUT, see code app.use(methodOverride('_method')) //IMPORTANT FOR EDITS
-app.get('/campgrounds/:id/edit', async (req, res) => {
+app.get('/campgrounds/:id/edit', catchAsync(async (req, res) => {
     const campground = await Campground.findById(req.params.id)
     res.render('campgrounds/edit', { campground });
-})
+}))
 
-app.put('/campgrounds/:id', async (req, res) => {
+app.put('/campgrounds/:id', catchAsync(async (req, res) => {
     // res.send("IT WORKED") try use this first before coding anything else.
     const { id } = req.params;
     const campground = await Campground.findByIdAndUpdate(id, { ...req.body.campground });
     res.redirect(`/campgrounds/${campground._id}`)
-});
+}));
 
 //------------------------DELETE CAMPGROUND-----------------------
-app.delete('/campgrounds/:id', async (req, res) => {
+app.delete('/campgrounds/:id', catchAsync(async (req, res) => {
     const {id} = req.params
     await Campground.findByIdAndDelete(id)
     res.redirect('/campgrounds')
-})
+}));
 
 app.use((err, req, res, next) => {
     res.send ('oh boy')
