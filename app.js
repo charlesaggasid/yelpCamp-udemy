@@ -44,7 +44,7 @@ app.get('/campgrounds', catchAsync(async (req, res) => {
 
 //-------Order matters. No async/await for  CREATE A NEW CAMPGROUND-----------------------
 app.get('/campgrounds/new', (req, res) => {
-    res.render('campgrounds/new')
+    res.render('campgrounds/new-validatedForm')
 })
 //Need post request
 app.post('/campgrounds', catchAsync(async (req, res, next) => {
@@ -68,7 +68,7 @@ app.get('/campgrounds/:id', catchAsync(async (req, res) => {
 //Need to do methodOverride for PUT, see code app.use(methodOverride('_method')) //IMPORTANT FOR EDITS
 app.get('/campgrounds/:id/edit', catchAsync(async (req, res) => {
     const campground = await Campground.findById(req.params.id)
-    res.render('campgrounds/edit', { campground });
+    res.render('campgrounds/edit-validatedForm', { campground });
 }))
 
 app.put('/campgrounds/:id', catchAsync(async (req, res) => {
@@ -85,9 +85,33 @@ app.delete('/campgrounds/:id', catchAsync(async (req, res) => {
     res.redirect('/campgrounds')
 }));
 
-app.use((err, req, res, next) => {
-    res.send ('oh boy')
+// This code sets up a route handler that catches all requests ('*')
+// This means it will handle any request that doesn't match any other route
+// app.all('*', (req, res, next) => {
+    // When a request matches this route, it sends a response with the message 'Page Not Found'
+    // res.send('Page Not Found');
+// });
+
+app.all('*', (req, res, next) => {
+    next(new ExpressError('Page Not Found', 404))
 })
+
+
+
+// This code sets up a special middleware function to handle errors in your Express application
+// It's like a safety net that catches errors that happen anywhere in your application
+// app.use((err, req, res, next) => {
+     // When an error occurs, this function sends a response with the message 'oh boy'
+//     res.send('oh boy');
+// });
+
+app.use((err, req, res, next) => {
+    const { statusCode = 500, message = 'Something went wrong' } = err;
+    res.status(statusCode).send(message);
+})
+
+
+
 
 
 
